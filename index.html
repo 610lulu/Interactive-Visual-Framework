@@ -100,7 +100,7 @@
     grid-template-rows:repeat(2,minmax(0,1fr));
     gap:clamp(1rem,2.4vh,1.75rem) clamp(16px,2.5vw,28px);
   }
-  .work{cursor:pointer}
+  .work{position:relative;cursor:pointer}
   .work .matte{
     position:relative;
     background:#dfdbcf;
@@ -132,12 +132,12 @@
   .work-cap{display:none}
 
   /* 单屏画廊：三列两行 */
-  .w1{--r:-.6deg}
-  .w2{--r:.45deg}
-  .w3{--r:.6deg}
-  .w4{--r:-.4deg}
-  .w5{--r:-.5deg}
-  .w6{--r:.35deg}
+  .w1{--r:-.75deg;top:4px;left:-3px}
+  .w2{--r:.45deg;top:-4px;left:5px}
+  .w3{--r:.7deg;top:7px;left:-2px}
+  .w4{--r:-.5deg;top:-5px;left:4px}
+  .w5{--r:-.65deg;top:6px;left:-5px}
+  .w6{--r:.4deg;top:-2px;left:3px}
 
   /* ── 间奏：重复文字行 ────────────────── */
   .interlude{
@@ -220,6 +220,7 @@
     .works .section-head{margin-bottom:3rem}
     .gallery{display:block}
     .work{margin:0 auto 4.5rem;max-width:560px}
+    .w1,.w2,.w3,.w4,.w5,.w6{top:0;left:0}
     .work .matte{height:auto;display:block}
     .work img{height:auto;object-fit:initial}
     .work-cap{display:block;font-size:12.5px;line-height:2;color:var(--ink-soft);margin-top:.55rem;letter-spacing:.06em}
