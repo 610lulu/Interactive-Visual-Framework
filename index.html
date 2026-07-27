@@ -74,45 +74,6 @@
   .archive-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--ink-faint)}
 
   /* ── 首屏：大留白 + 小簇 ─────────────── */
-  .hero{position:relative;min-height:92vh}
-  .hero-cluster{
-    position:absolute;left:2%;bottom:13%;
-    display:flex;gap:clamp(1.4rem,3vw,2.6rem);align-items:flex-start;
-  }
-  .hero-vertical{
-    writing-mode:vertical-rl;
-    font-size:clamp(1.15rem,2vw,1.5rem);font-weight:500;
-    letter-spacing:.42em;line-height:1;
-    color:var(--ink);padding-top:2px;
-  }
-  .hero-notes{position:relative;padding-top:.35rem}
-  .hero-title-cn{font-size:clamp(1.7rem,3.2vw,2.3rem);font-weight:600;letter-spacing:.3em}
-  .hero-title-en{
-    position:relative;display:inline-block;
-    font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--ink-soft);
-    margin:.9rem 0 1.6rem;padding:0 .2em;z-index:0;
-  }
-  .hero-title-en::before{          /* 灰蓝纸带 */
-    content:"";position:absolute;left:-8%;right:-8%;top:18%;bottom:6%;
-    background:var(--wash);opacity:.5;transform:rotate(-.6deg);z-index:-1;
-  }
-  .hero-desc{
-    font-size:10.5px;line-height:2.1;letter-spacing:.06em;color:var(--ink-soft);
-  }
-  .hero-fig{
-    position:absolute;right:4%;top:11%;width:104px;
-  }
-  .hero-fig .matte{padding:6px}
-  .hero-fig figcaption{
-    margin-top:.5rem;font-size:9.5px;letter-spacing:.12em;color:var(--ink-faint);text-align:right;
-  }
-  .scroll-hint{
-    position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
-    font-size:10.5px;letter-spacing:.2em;color:var(--ink-faint);text-decoration:none;
-    transition:color .3s;
-  }
-  .scroll-hint:hover{color:var(--ink)}
-
   /* ── 章节标题 ───────────────────────── */
   .section-head{
     display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem 1.5rem;
@@ -255,7 +216,6 @@
     .notes-grid{grid-template-columns:1fr;gap:2.4rem}
     .note:nth-child(2),.note:nth-child(3){margin-top:0}
     .about-grid{grid-template-columns:1fr}
-    .hero-fig{width:84px;top:9%}
   }
 </style>
 </head>
@@ -279,27 +239,6 @@
   </header>
 
   <main>
-    <!-- 首屏 -->
-    <section class="hero">
-      <div class="hero-cluster">
-        <p class="hero-vertical">摄影是把光收进纸里</p>
-        <div class="hero-notes">
-          <p class="hero-title-cn">淡光室</p>
-          <p class="hero-title-en">a room of pale light</p>
-          <p class="hero-desc mono">photographs kept in paper —<br>
-            an archive of quiet moments,<br>
-            scanned slowly, kept longer.</p>
-        </div>
-      </div>
-      <figure class="hero-fig">
-        <div class="matte" style="background:var(--paper-hi);border:1px solid rgba(58,56,47,.08);transform:rotate(1.5deg)">
-          <img src="photos/ebb-tide.png" alt="退潮的海——一小块标本" style="display:block;width:100%;height:auto;filter:saturate(.92)">
-        </div>
-        <figcaption class="mono">fig.0 — tide, kept</figcaption>
-      </figure>
-      <a class="scroll-hint mono" href="#works">↓&nbsp;&nbsp;向下翻页 · scroll</a>
-    </section>
-
     <!-- 标本 -->
     <section id="works" class="works">
       <div class="section-head">
