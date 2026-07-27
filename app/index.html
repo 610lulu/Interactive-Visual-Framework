@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>淡光室 · PALE LIGHT ROOM — 摄影画廊</title>
+<meta name="description" content="淡光室 PALE LIGHT ROOM：一间收藏快要消失的光的摄影画廊。雨天的橱窗、退潮后的沙滩、夜里半掩的门——扫描、存档，放在纸上。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ece7da;
+    --paper-hi:#f5f2e9;
+    --ink:#3a382f;
+    --ink-soft:#6f6c60;
+    --ink-faint:#a09c8e;
+    --hairline:rgba(58,56,47,.22);
+    --wash:#c2cacc;          /* 唯一的淡色：灰蓝纸带 */
+    --serif:"Noto Serif SC","Songti SC","STSong",serif;
+    --mono:"Courier Prime","Courier New",ui-monospace,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background-color:var(--paper);
+    background-image:
+      radial-gradient(1200px 800px at 12% 6%, rgba(255,252,240,.55), transparent 62%),
+      radial-gradient(1000px 760px at 88% 84%, rgba(213,205,185,.38), transparent 60%),
+      radial-gradient(640px 520px at 72% 18%, rgba(226,219,202,.28), transparent 62%);
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:var(--serif);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:rgba(194,202,204,.55)}
+
+  /* 扫描噪点覆盖层 */
+  .grain{
+    position:fixed;inset:0;z-index:70;pointer-events:none;
+    mix-blend-mode:multiply;opacity:.55;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  }
+
+  .mono{font-family:var(--mono)}
+
+  /* 左侧竖排小字 */
+  .side-note{
+    position:fixed;left:16px;top:50%;z-index:40;
+    transform:translateY(-50%);
+    writing-mode:vertical-rl;
+    font-family:var(--mono);font-size:10px;letter-spacing:.32em;
+    color:rgba(58,56,47,.38);pointer-events:none;user-select:none;
+  }
+
+  .page{max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+
+  /* ── 档案栏 ─────────────────────────── */
+  .archive-bar{
+    display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.6rem 1.5rem;
+    padding:1.35rem 0 1.05rem;border-bottom:1px solid var(--hairline);
+  }
+  .brand{display:flex;align-items:baseline;gap:.7rem}
+  .brand-cn{font-size:16px;font-weight:600;letter-spacing:.28em}
+  .brand-en{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--ink-soft)}
+  .nav{display:flex;gap:1.6rem}
+  .nav a{
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--ink-soft);
+    text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;
+    transition:color .3s,border-color .3s;
+  }
+  .nav a:hover{color:var(--ink);border-bottom-color:var(--ink)}
+  .archive-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--ink-faint)}
+
+  /* ── 首屏：大留白 + 小簇 ─────────────── */
+  .hero{position:relative;min-height:92vh}
+  .hero-cluster{
+    position:absolute;left:2%;bottom:13%;
+    display:flex;gap:clamp(1.4rem,3vw,2.6rem);align-items:flex-start;
+  }
+  .hero-vertical{
+    writing-mode:vertical-rl;
+    font-size:clamp(1.15rem,2vw,1.5rem);font-weight:500;
+    letter-spacing:.42em;line-height:1;
+    color:var(--ink);padding-top:2px;
+  }
+  .hero-notes{position:relative;padding-top:.35rem}
+  .hero-title-cn{font-size:clamp(1.7rem,3.2vw,2.3rem);font-weight:600;letter-spacing:.3em}
+  .hero-title-en{
+    position:relative;display:inline-block;
+    font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--ink-soft);
+    margin:.9rem 0 1.6rem;padding:0 .2em;z-index:0;
+  }
+  .hero-title-en::before{          /* 灰蓝纸带 */
+    content:"";position:absolute;left:-8%;right:-8%;top:18%;bottom:6%;
+    background:var(--wash);opacity:.5;transform:rotate(-.6deg);z-index:-1;
+  }
+  .hero-desc{
+    font-size:10.5px;line-height:2.1;letter-spacing:.06em;color:var(--ink-soft);
+  }
+  .hero-fig{
+    position:absolute;right:4%;top:11%;width:104px;
+  }
+  .hero-fig .matte{padding:6px}
+  .hero-fig figcaption{
+    margin-top:.5rem;font-size:9.5px;letter-spacing:.12em;color:var(--ink-faint);text-align:right;
+  }
+  .scroll-hint{
+    position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+    font-size:10.5px;letter-spacing:.2em;color:var(--ink-faint);text-decoration:none;
+    transition:color .3s;
+  }
+  .scroll-hint:hover{color:var(--ink)}
+
+  /* ── 章节标题 ───────────────────────── */
+  .section-head{
+    display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem 1.5rem;
+    margin-bottom:clamp(3rem,6vw,5rem);
+  }
+  .section-head h2{font-size:clamp(1.3rem,2.4vw,1.7rem);font-weight:600;letter-spacing:.24em}
+  .wash{position:relative;z-index:0;padding:0 .12em}
+  .wash::before{
+    content:"";position:absolute;left:-9%;right:-9%;top:14%;bottom:2%;
+    background:var(--wash);opacity:.48;transform:rotate(-.5deg);z-index:-1;
+  }
+  .section-en{font-size:.62em;font-weight:400;letter-spacing:.2em;color:var(--ink-soft);margin-left:.4em}
+  .section-note{font-size:10.5px;letter-spacing:.12em;color:var(--ink-faint)}
+
+  /* ── 作品墙 ─────────────────────────── */
+  .works{padding:clamp(4rem,8vw,6.5rem) 0 0}
+  .gallery{
+    display:grid;grid-template-columns:repeat(12,1fr);
+    column-gap:clamp(16px,2.5vw,28px);row-gap:clamp(4.5rem,9vw,7.5rem);
+  }
+  .work{cursor:pointer}
+  .work .matte{
+    position:relative;
+    background:var(--paper-hi);
+    padding:clamp(8px,1vw,12px);
+    border:1px solid rgba(58,56,47,.08);
+    box-shadow:0 2px 10px rgba(58,56,47,.05);
+    transform:rotate(var(--r,0deg));
+    transition:transform .6s cubic-bezier(.22,.61,.36,1);
+  }
+  .work:hover .matte{transform:rotate(0deg) translateY(-3px)}
+  .work img{display:block;width:100%;height:auto;filter:saturate(.92)}
+  .tape{
+    position:absolute;top:-11px;left:32%;width:76px;height:22px;
+    background:rgba(194,202,204,.5);transform:rotate(-2.5deg);
+  }
+  .work-meta{
+    font-size:10px;letter-spacing:.14em;color:var(--ink-faint);
+    margin-bottom:.7rem;
+  }
+  .nb{white-space:nowrap}
+  .work figcaption{margin-top:1.1rem}
+  .work h3{font-size:1.02rem;font-weight:600;letter-spacing:.18em}
+  .work-en{
+    font-family:var(--mono);font-style:italic;font-size:10px;letter-spacing:.14em;
+    color:var(--ink-soft);margin-top:.45rem;
+  }
+  .work-cap{font-size:12.5px;line-height:2;color:var(--ink-soft);margin-top:.55rem;letter-spacing:.06em}
+
+  /* 版面：错落的手工网格 */
+  .w1{grid-column:2/5;grid-row:1;--r:-1.1deg}
+  .w2{grid-column:6/12;grid-row:1;--r:.7deg;margin-top:clamp(5rem,10vw,9rem)}
+  .w3{grid-column:8/11;grid-row:2;--r:1.2deg}
+  .w4{grid-column:1/7;grid-row:2;--r:-.6deg;margin-top:clamp(3rem,7vw,5.5rem)}
+  .w5{grid-column:2/6;grid-row:3;--r:-.9deg;margin-top:clamp(4rem,8vw,6.5rem)}
+  .w6{grid-column:7/12;grid-row:3;--r:.5deg}
+
+  /* ── 间奏：重复文字行 ────────────────── */
+  .interlude{
+    margin:clamp(5rem,10vw,8rem) 0 0;padding:2.4rem 0;
+    border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+    overflow:hidden;white-space:nowrap;
+  }
+  .interlude p{
+    font-size:10.5px;letter-spacing:.3em;color:rgba(58,56,47,.4);text-align:center;
+  }
+
+  /* ── 手记 ──────────────────────────── */
+  .notes{padding:clamp(5rem,10vw,8rem) 0 0}
+  .notes-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:clamp(2rem,4vw,3.5rem);
+  }
+  .note{border-top:1px solid rgba(58,56,47,.4);padding-top:1.1rem}
+  .note:nth-child(2){margin-top:2.2rem}
+  .note:nth-child(3){margin-top:4.4rem}
+  .note-date{font-size:10px;letter-spacing:.16em;color:var(--ink-faint)}
+  .note-body{font-size:13.5px;line-height:2.15;color:var(--ink-soft);margin-top:.9rem;letter-spacing:.04em}
+
+  /* ── 关于 ──────────────────────────── */
+  .about{padding:clamp(5rem,10vw,8rem) 0 clamp(5rem,10vw,7rem)}
+  .about-grid{
+    display:grid;grid-template-columns:1.25fr .75fr;
+    gap:clamp(2.5rem,5vw,4.5rem);align-items:start;
+  }
+  .about-body{font-size:14.5px;line-height:2.3;letter-spacing:.05em;color:var(--ink)}
+  .about-list{list-style:none;font-size:11px;letter-spacing:.1em;color:var(--ink-soft);line-height:2.6}
+  .about-list li::before{content:"— "}
+
+  /* ── 页脚 ──────────────────────────── */
+  .footer{
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1.5rem;
+    border-top:1px solid var(--hairline);
+    padding:1.4rem 0 2.4rem;
+    font-size:10px;letter-spacing:.14em;color:var(--ink-faint);
+  }
+
+  /* ── 灯箱 ──────────────────────────── */
+  .lightbox{
+    position:fixed;inset:0;z-index:100;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(46,44,36,.85);
+    opacity:0;visibility:hidden;
+    transition:opacity .45s ease,visibility .45s;
+    padding:2rem;
+  }
+  .lightbox.open{opacity:1;visibility:visible}
+  .lb-figure{max-width:min(92vw,860px)}
+  .lb-matte{background:var(--paper-hi);padding:clamp(10px,1.4vw,16px)}
+  .lb-matte img{display:block;max-width:100%;max-height:68vh;width:auto;height:auto;margin:0 auto}
+  .lightbox figcaption{margin-top:1.2rem;display:flex;flex-direction:column;gap:.4rem;color:#ddd8c9}
+  #lbMeta{font-size:10px;letter-spacing:.16em;opacity:.65}
+  .lb-title{font-size:15.5px;letter-spacing:.16em}
+  .lb-cap{font-size:12.5px;line-height:1.9;opacity:.8;letter-spacing:.05em}
+  .lb-close{
+    position:absolute;top:1.5rem;right:1.9rem;
+    background:none;border:none;cursor:pointer;
+    font-size:12px;letter-spacing:.16em;color:#ddd8c9;
+    padding:.4rem .6rem;transition:opacity .3s;
+  }
+  .lb-close:hover{opacity:.65}
+
+  /* ── 入场 ──────────────────────────── */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .9s ease,transform .9s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none;transition:none}
+    .work .matte{transition:none}
+  }
+
+  /* ── 响应式 ─────────────────────────── */
+  @media (max-width:1100px){.side-note{display:none}}
+  @media (max-width:900px){
+    .gallery{display:block}
+    .work{margin:0 auto 4.5rem;max-width:560px}
+    .work:nth-of-type(odd){margin-right:8%}
+    .work:nth-of-type(even){margin-left:8%}
+    .w1,.w2,.w3,.w4,.w5,.w6{margin-top:0}
+    .notes-grid{grid-template-columns:1fr;gap:2.4rem}
+    .note:nth-child(2),.note:nth-child(3){margin-top:0}
+    .about-grid{grid-template-columns:1fr}
+    .hero-fig{width:84px;top:9%}
+  }
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<p class="side-note" aria-hidden="true">photographs kept in paper &amp; quiet —</p>
+
+<div class="page">
+
+  <header class="archive-bar">
+    <div class="brand">
+      <span class="brand-cn">淡光室</span>
+      <span class="brand-en">PALE LIGHT ROOM</span>
+    </div>
+    <nav class="nav">
+      <a href="#works">标本 SPECIMENS</a>
+      <a href="#notes">手记 NOTES</a>
+      <a href="#about">关于 ABOUT</a>
+    </nav>
+    <div class="archive-meta">ARCHIVE No.07&nbsp;&nbsp;/&nbsp;&nbsp;07.26&nbsp;&nbsp;/&nbsp;&nbsp;light rain</div>
+  </header>
+
+  <main>
+    <!-- 首屏 -->
+    <section class="hero">
+      <div class="hero-cluster">
+        <p class="hero-vertical">摄影是把光收进纸里</p>
+        <div class="hero-notes">
+          <p class="hero-title-cn">淡光室</p>
+          <p class="hero-title-en">a room of pale light</p>
+          <p class="hero-desc mono">photographs kept in paper —<br>
+            an archive of quiet moments,<br>
+            scanned slowly, kept longer.</p>
+        </div>
+      </div>
+      <figure class="hero-fig">
+        <div class="matte" style="background:var(--paper-hi);border:1px solid rgba(58,56,47,.08);transform:rotate(1.5deg)">
+          <img src="photos/ebb-tide.png" alt="退潮的海——一小块标本" style="display:block;width:100%;height:auto;filter:saturate(.92)">
+        </div>
+        <figcaption class="mono">fig.0 — tide, kept</figcaption>
+      </figure>
+      <a class="scroll-hint mono" href="#works">↓&nbsp;&nbsp;向下翻页 · scroll</a>
+    </section>
+
+    <!-- 标本 -->
+    <section id="works" class="works">
+      <div class="section-head">
+        <h2><span class="wash">标本</span><span class="section-en">Specimens</span></h2>
+        <p class="mono section-note">six photographs, kept quietly / 2024–2026</p>
+      </div>
+
+      <div class="gallery">
+
+        <figure class="work w1 reveal" tabindex="0"
+          data-full="photos/rain-window.png"
+          data-meta="01&nbsp;&nbsp;/&nbsp;&nbsp;07.26&nbsp;&nbsp;/&nbsp;&nbsp;light rain&nbsp;&nbsp;/&nbsp;&nbsp;神保町"
+          data-title="雨停在旧书页 · the rain stops on old pages"
+          data-cap="雨把橱窗擦得很轻，书在里面睡觉。">
+          <p class="mono work-meta">01&nbsp;&nbsp;/&nbsp;&nbsp;07.26&nbsp;&nbsp;/&nbsp;&nbsp;light rain&nbsp;&nbsp;/ <span class="nb">神保町</span></p>
+          <div class="matte">
+            <span class="tape" aria-hidden="true"></span>
+            <img src="photos/rain-window.png" alt="雨停在旧书页——雨中的旧书店橱窗" loading="lazy">
+          </div>
+          <figcaption>
+            <h3>雨停在旧书页</h3>
+            <p class="work-en">the rain stops on old pages</p>
+            <p class="work-cap">雨把橱窗擦得很轻，书在里面睡觉。</p>
+          </figcaption>
+        </figure>
+
+        <figure class="work w2 reveal" tabindex="0"
+          data-full="photos/ebb-tide.png"
+          data-meta="02&nbsp;&nbsp;/&nbsp;&nbsp;05.14&nbsp;&nbsp;/&nbsp;&nbsp;overcast&nbsp;&nbsp;/&nbsp;&nbsp;镰仓"
+          data-title="退潮以后 · after the ebb"
+          data-cap="潮水退远了，沙滩还记得它的形状。">
+          <p class="mono work-meta">02&nbsp;&nbsp;/&nbsp;&nbsp;05.14&nbsp;&nbsp;/&nbsp;&nbsp;overcast&nbsp;&nbsp;/ <span class="nb">镰仓</span></p>
+          <div class="matte">
+            <img src="photos/ebb-tide.png" alt="退潮以后——阴天里镜面般的沙滩" loading="lazy">
+          </div>
+          <figcaption>
+            <h3>退潮以后</h3>
+            <p class="work-en">after the ebb</p>
+            <p class="work-cap">潮水退远了，沙滩还记得它的形状。</p>
+          </figcaption>
+        </figure>
+
+        <figure class="work w3 reveal" tabindex="0"
+          data-full="photos/night-door.png"
+          data-meta="03&nbsp;&nbsp;/&nbsp;&nbsp;11.02&nbsp;&nbsp;/&nbsp;&nbsp;clear&nbsp;&nbsp;/&nbsp;&nbsp;首尔"
+          data-title="夜之门半掩 · the door at night, ajar"
+          data-cap="门缝留了一线光，像没说完的话。">
+          <p class="mono work-meta">03&nbsp;&nbsp;/&nbsp;&nbsp;11.02&nbsp;&nbsp;/&nbsp;&nbsp;clear&nbsp;&nbsp;/ <span class="nb">首尔</span></p>
+          <div class="matte">
+            <span class="tape" aria-hidden="true"></span>
+            <img src="photos/night-door.png" alt="夜之门半掩——门缝里漏出一线光" loading="lazy">
+          </div>
+          <figcaption>
+            <h3>夜之门半掩</h3>
+            <p class="work-en">the door at night, ajar</p>
+            <p class="work-cap">门缝留了一线光，像没说完的话。</p>
+          </figcaption>
+        </figure>
+
+        <figure class="work w4 reveal" tabindex="0"
+          data-full="photos/afternoon-book.png"
+          data-meta="04&nbsp;&nbsp;/&nbsp;&nbsp;09.09&nbsp;&nbsp;/&nbsp;&nbsp;sunny&nbsp;&nbsp;/&nbsp;&nbsp;台南"
+          data-title="下午四点的书 · a book at 4 p.m."
+          data-cap="光斜过来的时候，字句都放慢了。">
+          <p class="mono work-meta">04&nbsp;&nbsp;/&nbsp;&nbsp;09.09&nbsp;&nbsp;/&nbsp;&nbsp;sunny&nbsp;&nbsp;/ <span class="nb">台南</span></p>
+          <div class="matte">
+            <img src="photos/afternoon-book.png" alt="下午四点的书——窗边的旧书与杯子" loading="lazy">
+          </div>
+          <figcaption>
+            <h3>下午四点的书</h3>
+            <p class="work-en">a book at 4 p.m.</p>
+            <p class="work-cap">光斜过来的时候，字句都放慢了。</p>
+          </figcaption>
+        </figure>
+
+        <figure class="work w5 reveal" tabindex="0"
+          data-full="photos/summer-bicycle.png"
+          data-meta="05&nbsp;&nbsp;/&nbsp;&nbsp;08.03&nbsp;&nbsp;/&nbsp;&nbsp;heat&nbsp;&nbsp;/&nbsp;&nbsp;京都"
+          data-title="夏天的影子 · shadow of summer"
+          data-cap="车靠在墙上，夏天靠在车上。">
+          <p class="mono work-meta">05&nbsp;&nbsp;/&nbsp;&nbsp;08.03&nbsp;&nbsp;/&nbsp;&nbsp;heat&nbsp;&nbsp;/ <span class="nb">京都</span></p>
+          <div class="matte">
+            <span class="tape" aria-hidden="true"></span>
+            <img src="photos/summer-bicycle.png" alt="夏天的影子——靠在旧墙上的自行车" loading="lazy">
+          </div>
+          <figcaption>
+            <h3>夏天的影子</h3>
+            <p class="work-en">shadow of summer</p>
+            <p class="work-cap">车靠在墙上，夏天靠在车上。</p>
+          </figcaption>
+        </figure>
+
+        <figure class="work w6 reveal" tabindex="0"
+          data-full="photos/mountain-mist.png"
+          data-meta="06&nbsp;&nbsp;/&nbsp;&nbsp;02.18&nbsp;&nbsp;/&nbsp;&nbsp;fog&nbsp;&nbsp;/&nbsp;&nbsp;阿里山"
+          data-title="雾中独坐 · sitting in the mist"
+          data-cap="雾把山折起来，收进口袋。">
+          <p class="mono work-meta">06&nbsp;&nbsp;/&nbsp;&nbsp;02.18&nbsp;&nbsp;/&nbsp;&nbsp;fog&nbsp;&nbsp;/ <span class="nb">阿里山</span></p>
+          <div class="matte">
+            <img src="photos/mountain-mist.png" alt="雾中独坐——雾气穿过山间松林" loading="lazy">
+          </div>
+          <figcaption>
+            <h3>雾中独坐</h3>
+            <p class="work-en">sitting in the mist</p>
+            <p class="work-cap">雾把山折起来，收进口袋。</p>
+          </figcaption>
+        </figure>
+
+      </div>
+    </section>
+
+    <!-- 间奏 -->
+    <div class="interlude" aria-hidden="true">
+      <p class="mono">light, kept.&nbsp;&nbsp;&nbsp;light, kept.&nbsp;&nbsp;&nbsp;light, kept.&nbsp;&nbsp;&nbsp;light, kept.&nbsp;&nbsp;&nbsp;light, kept.&nbsp;&nbsp;&nbsp;light, kept.</p>
+    </div>
+
+    <!-- 手记 -->
+    <section id="notes" class="notes">
+      <div class="section-head">
+        <h2><span class="wash">手记</span><span class="section-en">Notes</span></h2>
+        <p class="mono section-note">three entries from the archive notebook</p>
+      </div>
+      <div class="notes-grid">
+        <article class="note reveal">
+          <p class="mono note-date">04.02&nbsp;&nbsp;/&nbsp;&nbsp;关于留白</p>
+          <p class="note-body">照片之外的部分，也是照片。空白不是没拍到的，是特意留下来的——让光有地方站一会儿。</p>
+        </article>
+        <article class="note reveal">
+          <p class="mono note-date">06.21&nbsp;&nbsp;/&nbsp;&nbsp;关于灰</p>
+          <p class="note-body">灰色不是无色，是所有颜色安静下来。它们没有走，只是坐低了，像散场后还不想回家的人。</p>
+        </article>
+        <article class="note reveal">
+          <p class="mono note-date">10.30&nbsp;&nbsp;/&nbsp;&nbsp;关于纸</p>
+          <p class="note-body">相纸会黄，黄得很慢，像记忆。所以这间屋子不开太亮的灯，让时间按自己的速度显影。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 关于 -->
+    <section id="about" class="about">
+      <div class="section-head">
+        <h2><span class="wash">关于</span><span class="section-en">About</span></h2>
+      </div>
+      <div class="about-grid">
+        <p class="about-body reveal">淡光室收藏那些快要消失的光：雨天的橱窗、退潮后的沙滩、夜里半掩的门。照片被一张张扫描、编号、存档，放在纸上，动作尽量轻一点。颜色在这里被要求安静下来——灰不是无色，是所有颜色坐下来的样子。如果你也走得慢，欢迎常来。</p>
+        <ul class="mono about-list reveal">
+          <li>器材 — 一台旧 Rolleiflex</li>
+          <li>相纸 — 过期的富士</li>
+          <li>存档 — No.01 – No.07</li>
+          <li>更新 — 不定期，看天气</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer mono">
+    <span>© 2026 淡光室 PALE LIGHT ROOM — scanned &amp; kept in pale light</span>
+    <span>p.01–07&nbsp;&nbsp;/&nbsp;&nbsp;No.07 完</span>
+  </footer>
+</div>
+
+<!-- 灯箱 -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="查看作品">
+  <button class="lb-close mono" id="lbClose" aria-label="关闭">×&nbsp;&nbsp;close</button>
+  <figure class="lb-figure">
+    <div class="lb-matte"><img id="lbImg" src="" alt=""></div>
+    <figcaption>
+      <span class="mono" id="lbMeta"></span>
+      <span class="lb-title" id="lbTitle"></span>
+      <span class="lb-cap" id="lbCap"></span>
+    </figcaption>
+  </figure>
+</div>
+
+<script>
+(function(){
+  var lightbox = document.getElementById('lightbox'),
+      lbImg   = document.getElementById('lbImg'),
+      lbMeta  = document.getElementById('lbMeta'),
+      lbTitle = document.getElementById('lbTitle'),
+      lbCap   = document.getElementById('lbCap'),
+      lbClose = document.getElementById('lbClose');
+
+  function openBox(work){
+    lbImg.src = work.dataset.full;
+    lbImg.alt = work.dataset.title;
+    lbMeta.innerHTML  = work.dataset.meta;
+    lbTitle.textContent = work.dataset.title;
+    lbCap.textContent   = work.dataset.cap;
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    lbClose.focus();
+  }
+  function closeBox(){
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.work').forEach(function(w){
+    w.addEventListener('click', function(){ openBox(w); });
+    w.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openBox(w); }
+    });
+  });
+  lbClose.addEventListener('click', closeBox);
+  lightbox.addEventListener('click', function(e){ if(e.target === lightbox) closeBox(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && lightbox.classList.contains('open')) closeBox();
+  });
+
+  /* 入场渐显 */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>
