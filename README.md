@@ -1,4 +1,4 @@
-# Interactive Visual Framework Photography Collection
+#Photography Collection
 
 A web interactive visual framework for organizing photography collections.
 
