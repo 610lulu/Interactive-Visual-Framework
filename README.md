@@ -1,6 +1,6 @@
 # Photography Portfolio
 
-A muted, editorial photography portfolio.
+A web interactive visual framework for organizing photography collections.
 
 ## Live Site
 
