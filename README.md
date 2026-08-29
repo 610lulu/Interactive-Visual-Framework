@@ -1,4 +1,4 @@
-#Interactive-Visual-Framework
+## Interactive-Visual-Framework
 
 A web interactive visual framework for organizing photography collections.
 
