@@ -1,4 +1,4 @@
-# Photography Portfolio
+# Interactive Visual Framework Photography Collection
 
 A web interactive visual framework for organizing photography collections.
 
