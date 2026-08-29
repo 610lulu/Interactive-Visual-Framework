@@ -1,4 +1,4 @@
-#Visual Novel
+#Interactive-Visual-Framework
 
 A web interactive visual framework for organizing photography collections.
 
