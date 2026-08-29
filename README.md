@@ -1,4 +1,4 @@
-#Photography Collection
+#Visual Novel
 
 A web interactive visual framework for organizing photography collections.
 
